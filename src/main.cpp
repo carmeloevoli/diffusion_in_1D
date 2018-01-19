@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -24,10 +25,10 @@ template <typename T, int size>
 class Grid {
   T memblock [size];
 public:
-   Grid(const T& value) {
-       for (int i = 0; i < size; i++)
-       memblock[i] = value;
-    }
+  Grid(const T& value) {
+    for (int i = 0; i < size; i++)
+      memblock[i] = value;
+  }
   void set (int x, T value){
     memblock[x] = value;
   }
@@ -35,9 +36,9 @@ public:
     return memblock[x];
   }
   void dump(const T& dt) {
-      std::cout << dt << "\n";
-      for (int i = 0; i < size; i++)
-         std::cout << memblock[i] << "\n";
+    std::cout << dt << "\n";
+    for (int i = 0; i < size; i++)
+      std::cout << memblock[i] << "\n";
   }
 };
 
@@ -70,56 +71,49 @@ private:
 template<typename T, int size>
 class Stepper {
 public:
-    virtual ~Stepper() {}
-    virtual void do_step(Grid<T, size>& N, const T& dt) = 0;
+  virtual ~Stepper() {}
+  virtual void do_step(Grid<T, size>& N, const T& dt) = 0;
 };
 
 template<typename T, int size>
 class CrankNicholson : public Stepper<T,size> {
 public:
-    CrankNicholson(Galaxy<T,size> *galaxy) : m_galaxy(galaxy) {
+  CrankNicholson(Galaxy<T,size> *galaxy_) : galaxy(galaxy_) {
+  }
+  void do_step(Grid<T, size>& N, const T& dt) {
+    T dt_half = 0.5 * dt;
+    for (int i = 1; i < size - 1; ++i) {
+      T L, C, U;
+      
+      central_diagonal[i] = 1 - dt_half * C;
+      if (i != 0) {
+	lower_diagonal[i - 1] = -dt_half * L;
+      }
+      if (i != size - 2) {
+	upper_diagonal[i] = -dt_half * U;
+      }
+      
+      rhs[i] = N.get(i) * (2 - central_diagonal[i]);
+      rhs[i] += (i != 0) ? dt_half * L * N.get(i - 1) : 0;
+      rhs[i] += (i != size - 2) ? dt_half * U * N.get(i + 1) : 0;
+      //rhs[i] += dt * Q.get(ik, iz) / (double) number_of_operators;
     }
-    void do_step(Grid<T, size>& N, const T& dt) {
-        T dt_half = 0.5 * dt;
-        T m_rhs [size - 2];
-        T central_diagonal [size - 2];
-        T upper_diagonal [size - 3];
-        T lower_diagonal [size - 3];
-           // vector<double> W_up(z_size - 1);
-        for (int i = 1; i < size - 1; ++i) {
-                T L, C, U;
-            
-                central_diagonal[i] = 1. - dt_half * C;
-                if (i != 0) {
-                    lower_diagonal[i - 1] = -dt_half * L;
-                }
-                if (i != size - 2) {
-                    upper_diagonal[i] = -dt_half * U;
-                }
-                
-                rhs[iz] = N.get(i) * (2 - central_diagonal[i]);
-                rhs[iz] += (iz != 0) ? dt_half * L * N.get(i - 1) : 0.;
-                rhs[iz] += (iz != z_size - 2) ? dt_half * U * N.get(i + 1) : 0;
-                //rhs[iz] += dt * Q_w.get(ik, iz) / (double) number_of_operators;
-            }
-            
-            //gsl_linalg_solve_tridiag(central_diagonal, upper_diagonal, lower_diagonal, rhs, W_up);
-            
-            /*for (size_t iz = 1; iz < z_size - 1; ++iz) {
-                double value = 0.5 * (W_up.at(iz) + W_up.at(z_size - 1 - iz));
-                double floor_value = 0; // 1e-10 * pc * pow(k.at(ik) * pc, -7);
-                W.get(ik, iz) = max(value, floor_value);
-            }*.
-        }
-    }    }
+    
+    //gsl_linalg_solve_tridiag(central_diagonal, upper_diagonal, lower_diagonal, rhs, W_up);
+    
+    for (int i = 1; i < size - 1; ++i)
+      N.set(i) = std::max(N_up[i - 1], 0);
+  }
 private:
-    Galaxy<T, size> *m_galaxy;
-    T m_rhs [size - 2];
-
+  Galaxy<T, size> *galaxy;
+  T rhs [size - 2];
+  T N_up[size - 2];
+  T central_diagonal [size - 2];
+  T upper_diagonal [size - 3];
+  T lower_diagonal [size - 3];
 };
 
-int main( int argc , char **argv )
-{
+int main( int argc , char **argv ) {
   const double dt = 0.1 * kyr;
   const double D0 = 3e28 * cm2 / sec;
   const double vA = 10 * km / sec;
@@ -132,7 +126,7 @@ int main( int argc , char **argv )
   CrankNicholson<double, 16> CN (&galaxy);
   
   for(double t = 0; t < Myr; t += dt) {
-      CN.do_step(N, dt);
-      N.dump(dt);
+    CN.do_step(N, dt);
+    N.dump(dt);
   }
 }
