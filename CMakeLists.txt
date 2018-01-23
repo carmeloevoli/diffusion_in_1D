@@ -11,6 +11,7 @@ set( DAS_EXTRA_LIBRARIES )
 
 set( DAS_SRCS 
      src/main.cpp
+     src/galaxy.cpp
      src/tridiag.cpp
 )
 
