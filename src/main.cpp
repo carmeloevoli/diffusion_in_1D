@@ -27,19 +27,15 @@ public:
     this->dt = dt;
     this->galaxy = galaxy; 
     size = galaxy->get_size();
-    double courant_advection = galaxy->get_v() * dt / galaxy->get_dz();
-    double courant_diffusion = 2. * galaxy->get_D() * dt / pow2(galaxy->get_dz());
-    std::cout << " ... time step in Myr is " << dt / Myr << "\n";
-    std::cout << " ... grid step in kpc is " << galaxy->get_dz() / kpc << "\n";
-    std::cout << " ... Courant number for advection is " << courant_advection << "\n";
-    std::cout << " ... Courant number for diffusion is " << courant_diffusion << "\n";
-   }
+  }
   
   virtual ~DiffusionAdvectionSolver1D() {
   }
+
+  virtual void print_scheme() = 0;
   
   virtual void do_step(std::vector<double>& N) = 0;
-
+  
   void dump(const std::vector<double>& N, const double& t) {
     std::string filename = generate_output_filename(t / Myr, size);
     std::ofstream outfile(filename.c_str());
@@ -76,6 +72,14 @@ public:
     central_diag.resize(size - 2);
     upper_diag.resize(size - 3);
     lower_diag.resize(size - 3);
+  }
+
+  virtual void print_scheme() {
+    std::cout << "Crank-Nicholson implicit\n";
+    std::cout << " ... time step in Myr is " << dt / Myr << "\n";
+    std::cout << " ... grid step in kpc is " << galaxy->get_dz() / kpc << "\n";
+    std::cout << " ... Courant number for advection is " << galaxy->get_v() * dt / galaxy->get_dz() << "\n";
+    std::cout << " ... Courant number for diffusion is " << 2 * galaxy->get_D() * dt / pow2(galaxy->get_dz()) << "\n";
   }
   
   virtual void do_step(std::vector<double>& N) {
@@ -150,7 +154,8 @@ int main( int argc , char **argv ) {
   galaxy.init(D0, vA, sigma, H);
 
   CrankNicholson CN(dt, &galaxy);
-
+  CN.print_scheme();
+  
   ProgressBar bar;
   CN.run(550 * Myr, 10 * Myr, &bar);
 }
