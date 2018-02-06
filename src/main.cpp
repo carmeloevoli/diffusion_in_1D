@@ -16,7 +16,7 @@ std::string generate_output_filename(const double& t, const size_t& size) {
 	sstream << "output/" << "N";
 	sstream << "_size_" << size;
 	sstream << "_t_" << t;
-	sstream << ".txt";
+	sstream << ".ascii";
 	std::string out = sstream.str();
 	return out;
 }
