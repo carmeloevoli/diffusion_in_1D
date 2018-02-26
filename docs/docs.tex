@@ -1,0 +1,222 @@
+\documentclass[9pt]{beamer} 
+\usetheme{CambridgeUS}
+\usepackage[utf8]{inputenc}
+\usefonttheme{professionalfonts}
+\usecolortheme{dolphin}
+\setbeamertemplate{items}[triangle]
+\setbeamercolor{alerted text}{fg=orange}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{cancel}
+\renewcommand{\CancelColor}{\color{orange}}
+
+\newcommand{\redbox}[1]{\colorbox{red!50}{$\displaystyle#1$}}
+\newcommand{\greenbox}[1]{\colorbox{green!50}{$\displaystyle#1$}}
+\newcommand{\orangebox}[1]{\colorbox{orange!50}{$\displaystyle#1$}}
+
+\author[C.~Evoli]{Carmelo Evoli}
+\institute[GSSI]{Gran Sasso Science Institute @L'Aquila}
+\title[CR in self-generated turbulence]{New consequences of cosmic-ray propagation in self-generated turbulence}
+\date[CIII Congresso SIF 2017]{CIII Congresso Nazionale della SIF @Trento}
+\titlegraphic{\includegraphics[width=1cm]{logo_gssi}}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{The diffusion-advection equation}
+
+We want to solve the diffusion-advection equation for a cosmic-ray species whose density per unit of energy is $N$:
+%
+\begin{equation*}
+\frac{\partial N}{\partial t} 
++\frac{\partial}{\partial z} \left[ D_{zz}(z) \frac{\partial N}{\partial z} \right]
++v_z \frac{\partial N}{\partial z}
+= Q_{\rm SNR}(z)
+\end{equation*}
+%
+having boundary conditions $N(z \pm H) = 0$.
+
+We assume an {\color{orange}inhomogeneous} diffusion coefficient, hence we cannot solve it analytically:
+%
+\begin{eqnarray*}
+D_{zz} & = & D_0 \left( \frac{z}{z_d} \right)^{2} \\
+Q_{\rm SNR} & = & Q_0 \delta(z) \left( \frac{p}{\rm GeV/c} \right)^{-\alpha} \\
+v_z & = & v_0
+\end{eqnarray*}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{title}
+
+We introduce the space and time grids: 
+%
+\begin{eqnarray*}
+t_n & = & n \Delta t \, , \,\,\,\,  n = 0, 1, \dots  \\ 
+z_j & = & i \Delta z \, , \,\,\,\,  i = 0, 1, \dots, N-1
+\end{eqnarray*}
+%
+where
+%
+$t_0 = 0$, while $z_0 = -H$, $z_{N-1} = +H$, therefore:
+%
+\begin{equation*}
+\Delta z = \frac{2H}{N - 1}
+\end{equation*}
+
+CR density at a given position and time can be written on this lattice as
+%
+\begin{equation*}
+N(z, t) \rightarrow N_i^n
+\end{equation*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Derivative approximations}
+
+We can approximate the time derivative as:
+%
+\begin{eqnarray*}
+\frac{\partial N}{\partial t} & \sim & \frac{N_i^{n+1} - N_i^n}{\Delta t} + {\mathcal O}(\Delta t^p) \\
+\end{eqnarray*}
+%
+while, for the space 1st-order derivative we have different choices:
+%
+\begin{eqnarray*}
+\frac{\partial N}{\partial z} & \sim & \frac{N^n_{i+1} - N^n_i}{\Delta t} + {\mathcal O}(\Delta z^p) \qquad \text{forward}\\
+%\frac{\partial N}{\partial z} & \sim & \frac{N^n_{i+1} - N^n_{i-1}}{2\Delta t} + {\mathcal O}(\Delta z^p) \qquad \text{central} \\
+\frac{\partial N}{\partial z} & \sim & \frac{N^n_i - N^{n}_{i-1}}{\Delta t} + {\mathcal O}(\Delta z^p) \qquad \text{backward} \\
+\end{eqnarray*}
+%
+and for the second order derivative:
+%
+\begin{eqnarray*}
+\frac{\partial^2 N}{\partial z^2} & \sim & \frac{N^n_{i+1} - 2N^n_i + N^{n}_{i-1}}{2 \Delta z^2} + {\mathcal O}(\Delta z^p) \qquad \text{central} 
+\end{eqnarray*}
+
+{\color{orange}Exercises:}
+%
+\begin{itemize}
+\item find $p$ in the different schemes \\
+\item find the central scheme for the 1st-order derivative \\
+\item find the forward scheme for the 2nd-order derivative \\
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{title}
+
+Schematically the transport equation can be now written as:
+%
+\begin{equation*}
+\frac{\partial N}{\partial t} = {\mathcal L}N + Q
+\end{equation*}
+%
+where ${\mathcal L}$ is the operator which defines the transport equation.
+
+In its discretized version, the transport equation becomes:
+%
+\begin{equation*} 
+\frac{N_i^{n+1} - N_i^n}{\Delta t} = {\mathcal L}_i + Q_i \underset{\rm o.s.}{=}
+ \sum_k {\mathcal L}_i^k + \frac{Q_i}{m} 
+\end{equation*}
+
+By comparison with Eq.~ we have:
+%
+\begin{eqnarray*}
+{\mathcal L}_d & = & \frac{\partial}{\partial z} \left[ D_{zz}(z) \frac{\partial N}{\partial z} \right]\\
+{\mathcal L}_a & = & v_z \frac{\partial N}{\partial z} \\
+\end{eqnarray*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Energy losses}
+
+We want now the steady-state solution of the following equation (valid for $E \gg m$):
+%
+\begin{equation*}
+\frac{\partial N}{\partial t} + \frac{\partial}{\partial E} \left[ b N \right] = Q(E) \qquad b \equiv \frac{dE}{dt} < 0
+\end{equation*}
+%
+with b.c.~$N(E = E_{\rm max}) = 0$.
+
+The analytical solution is obtained by assuming power-laws for both the loss term rate and for the source term:
+%
+\begin{equation*}
+b(E) = -b_0 \left( \frac{E}{\rm GeV} \right)^2 \qquad b_0 > 0
+\end{equation*}
+%
+\begin{equation*}
+Q(p) = Q_0 \left( \frac{E}{\rm GeV} \right)^{-\alpha} \qquad \alpha > 2
+\end{equation*}
+%
+therefore
+%
+\begin{equation*}
+N_a(E) = \frac{Q_0}{\alpha - 1} \frac{\rm GeV}{b_0} \left[ \left( \frac{E}{\rm GeV} \right)^{-\alpha-1} - \left( \frac{E_{\rm max}}{\rm GeV} \right)^{-\alpha + 1} \left( \frac{E}{\rm GeV} \right)^{-2} \right]
+\end{equation*}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Energy discretisation}
+
+The energy grid is chosen such that $E_{i+1} = (1 + \epsilon) E_i \, \forall i$ with $\epsilon > 0$:
+%
+\begin{equation*}
+E_i = (1 + \epsilon)^i E_0 \qquad i = 0, \dots, N_E - 1
+\end{equation*}
+%
+Therefore:
+%
+\begin{equation*}
+N(E,t) \rightarrow N_i^n
+\end{equation*}
+
+This choice makes integrals over energy very easy:
+%
+\begin{equation}\label{integral}
+E_T = \int_{E_0}^{E_{\rm max}} dE \, E N(E,t) \sim \log(1+\epsilon) \sum_k E_k^2 N_k^n
+\end{equation}
+
+
+{\color{orange}Exercises:}
+%
+\begin{itemize}
+\item find $\epsilon$ given $E_0$, $E_{\rm max}$, $N_E$ \\
+\item assume $N(E,t) \propto E^{-2.7}$ and estimate the accuracy of the numerical integral in~(\ref{integral}) as a function of $\epsilon$ \\
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Upwind scheme}
+
+It corresponds to an {\color{orange}advection} (with $v < 0$) along the energy axis, therefore we use 
+%
+\begin{equation*}
+\frac{N^{n+1}_i - N^n_i}{\Delta t} = \frac{b_{i+1} N_{i+1}^n - b_i N_i^n}{E_{i+1} - E_i} + Q_i
+\end{equation*}
+%
+\begin{equation*}
+N^{n+1}_i = N^n_i + \Delta t \frac{b_{i+1}}{E_{i+1} - E_i} N_{i+1}^n - \frac{b_i}{E_{i+1} - E_i} N_i^n} + Q_i \Delta t 
+\end{equation*}
+
+
+
+\end{frame}
+
+
+\end{document}
