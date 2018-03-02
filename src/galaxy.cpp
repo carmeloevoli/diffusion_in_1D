@@ -1,6 +1,6 @@
 #include "galaxy.h"
 
-Galaxy::Galaxy(size_t& size) : z(std::vector<double> (size)), Q(std::vector<double> (size)), D(std::vector<double> (size)), v(std::vector<double> (size)) {}
+Galaxy::Galaxy(const size_t& size) : z(std::vector<double> (size)), Q(std::vector<double> (size)), D(std::vector<double> (size)), v(std::vector<double> (size)) {}
 
 
 Galaxy::~Galaxy() {
