@@ -45,9 +45,9 @@ We want to solve the diffusion-advection equation for a cosmic-ray species whose
 = Q_{\rm SNR}(z)
 \end{equation*}
 %
-having boundary conditions $N(z \pm H) = 0$.
+having boundary conditions $N(z = \pm H) = 0$.
 
-We assume an {\color{orange}inhomogeneous} diffusion coefficient, hence we cannot solve it analytically:
+We assume {\color{orange}inhomogeneous} diffusion, tipically in this case we cannot find an analytical solution:
 %
 \begin{eqnarray*}
 D_{zz} & = & D_0 \left( \frac{z}{z_d} \right)^{2} \\
@@ -57,7 +57,7 @@ v_z & = & v_0
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{title}
+\begin{frame}{Gridding space-time}
 
 We introduce the space and time grids: 
 %
@@ -116,7 +116,7 @@ and for the second order derivative:
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{title}
+\begin{frame}{Operator splitting}
 
 Schematically the transport equation can be now written as:
 %
