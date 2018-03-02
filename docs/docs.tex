@@ -16,9 +16,9 @@
 \newcommand{\orangebox}[1]{\colorbox{orange!50}{$\displaystyle#1$}}
 
 \author[C.~Evoli]{Carmelo Evoli}
-\institute[GSSI]{Gran Sasso Science Institute @L'Aquila}
-\title[CR in self-generated turbulence]{New consequences of cosmic-ray propagation in self-generated turbulence}
-\date[CIII Congresso SIF 2017]{CIII Congresso Nazionale della SIF @Trento}
+\institute[GSSI]{Gran Sasso Science Institute}
+\title[Numerical methods in HEA]{Numerical methods in high-energy astrophysics}
+\date[2018]{Summer Semestrer 2018}
 \titlegraphic{\includegraphics[width=1cm]{logo_gssi}}
 
 \begin{document}
@@ -204,15 +204,31 @@ E_T = \int_{E_0}^{E_{\rm max}} dE \, E N(E,t) \sim \log(1+\epsilon) \sum_k E_k^2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Upwind scheme}
 
-It corresponds to an {\color{orange}advection} (with $v < 0$) along the energy axis, therefore we use 
+It corresponds to an {\color{orange}advection} (with $v < 0$) along the energy axis, therefore we use the forward scheme:
 %
 \begin{equation*}
-\frac{N^{n+1}_i - N^n_i}{\Delta t} = \frac{b_{i+1} N_{i+1}^n - b_i N_i^n}{E_{i+1} - E_i} + Q_i
+\frac{N^{n+1}_i - N^n_i}{\Delta t} + {\mathcal O}(\Delta t) = -\frac{b_{i+1} N_{i+1}^n - b_i N_i^n}{E_{i+1} - E_i} + {\mathcal O}(\Delta E_i)+ Q_i
 \end{equation*}
 %
 \begin{equation*}
-N^{n+1}_i = N^n_i + \Delta t \frac{b_{i+1}}{E_{i+1} - E_i} N_{i+1}^n - \frac{b_i}{E_{i+1} - E_i} N_i^n} + Q_i \Delta t 
+N^{n+1}_i = Q_i \Delta t
+- \left[ \Delta t \frac{b_{i+1}}{\epsilon E_i} \right] N_{i+1}^n
++ \left[ \Delta t \frac{b_{i}}{\epsilon E_i} \right] N_i^n
+% + N^n_i + \Delta t \frac{b_{i+1}}{E_{i+1} - E_i} N_{i+1}^n - \frac{b_i}{E_{i+1} - E_i} N_i^n} + 
 \end{equation*}
+
+We introduce the energy-losses timescale as:
+%
+\begin{equation*}
+\tau_l \equiv \frac{E}{b(E)} \rightarrow \tau_{l,i} = \frac{E_i}{b_i}
+\end{equation*}
+%
+the Courant condition applied here corresponds to 
+%
+\begin{equation*}
+\Delta t < {\rm min} \left( \tau_l \right) \rightarrow \Delta t < \underset{i}{\rm min} \left( \frac{E_i}{b_i} \right)
+\end{equation*}
+
 
 
 
